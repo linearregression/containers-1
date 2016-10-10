@@ -13,3 +13,4 @@ RUN set -eux &&\
   rm -rf  /tmp/* /var/tmp/* /var/lib/apt/lists/* /usr/share/doc/* /usr/share/locale/* /var/cache/debconf/*-old
 
 ENTRYPOINT ["fpm"]
+CMD ["--help"]
