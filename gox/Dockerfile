@@ -1,8 +1,8 @@
-FROM golang:1.7-alpine
+FROM golang:1.7
 MAINTAINER Ivan Porto Carrero <ivan@flanders.co.nz> (@casualjim)
 
 RUN set -e &&\
-  apk add --no-cache git bash musl-dev gcc 
+  go get -u github.com/mitchellh/gox
 
-ENTRYPOINT ["/usr/local/go/bin/go", "build"]
+ENTRYPOINT ["gox"]
 CMD ["--help"]
