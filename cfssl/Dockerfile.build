@@ -1,0 +1,28 @@
+FROM casualjim/builder
+MAINTAINER Ivan Porto Carrero <ivan@flanders.co.nz> (@casualjim)
+
+RUN set -e &&\
+  apk add --no-cache --virtual .buildDeps git gcc libc-dev libtool libgcc &&\
+  mkdir -p /build /dist &&\
+  go get github.com/GeertJohan/go.rice/rice &&\
+  go get -u -d github.com/cloudflare/cfssl/cli &&\
+  cd /go/src/github.com/cloudflare/cfssl &&\
+  rice embed-go -i=./cli/serve &&\
+  go build -o /build/cfssl-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssl &&\
+  go build -o /build/cfssljson-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssljson &&\
+  go build -o /build/mkbundle-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/mkbundle &&\
+  go build -o /build/multirootca-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/multirootca &&\
+  go build -o /build/cfssl-bundle-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssl-bundle &&\
+  go build -o /build/cfssl-certinfo-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssl-certinfo &&\
+  go build -o /build/cfssl-newkey-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssl-newkey &&\
+  go build -o /build/cfssl-scan-fat -a -ldflags '-s -w -linkmode external -extldflags "-static"' ./cmd/cfssl-scan &&\
+  upx --brute -o /dist/cfssl /build/cfssl-fat &&\
+  upx --brute -o /dist/cfssljson /build/cfssljson-fat &&\
+  upx --brute -o /dist/cfssl-bundle /build/cfssl-bundle-fat &&\
+  upx --brute -o /dist/cfssl-certinfo /build/cfssl-certinfo-fat &&\
+  upx --brute -o /dist/cfssl-newkey /build/cfssl-newkey-fat &&\
+  upx --brute -o /dist/cfssl-scan /build/cfssl-scan-fat &&\
+  upx --brute -o /dist/mkbundle /build/mkbundle-fat &&\
+  upx --brute -o /dist/multirootca /build/multirootca-fat &&\
+  rm -rf /go/src/github.com/GeertJohan /go/bin/rice &&\
+  apk del .buildDeps

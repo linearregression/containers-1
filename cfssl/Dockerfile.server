@@ -1,0 +1,5 @@
+FROM casualjim/cfssl
+MAINTAINER Ivan Porto Carrero <ivan@flanders.co.nz> (@casualjim)
+
+ENTRYPOINT ["/bin/dumb-init", "/usr/bin/cfssl"]
+CMD ["serve", "-address=0.0.0.0"]

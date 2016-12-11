@@ -1,0 +1,9 @@
+FROM casualjim/base
+MAINTAINER Ivan Porto Carrero <ivan@flanders.co.nz> (@casualjim)
+
+ADD dist/* /usr/bin/
+
+EXPOSE 8888
+
+VOLUME ["/etc/cfssl"]
+VOLUME ["/etc/certificates"]
